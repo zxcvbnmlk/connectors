@@ -99,6 +99,28 @@ table.connector-clude tr td.control a{
   display:inline-block;
   margin:2px;
 }
+
+table.filter-input tr td{
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+.filter-input .input-info.input-info-keywords {
+  font-size:10px;
+  line-height: 10px;
+}
+.filter-input select {
+  height: 23px;
+}
+.filter-input input[type="date"],.filter-input input[type="number"] {
+  width: 125px;
+  height: 16px;
+}
+
+.filter-input.connector-clude .rfnewcontentconnectortablestyle {
+  width:200px;
+  text-align:right;
+  padding-right:0;
+}
 .table-icon {
   display:inline-block;
   width:15px;

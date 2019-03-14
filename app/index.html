@@ -18,7 +18,7 @@
         <fieldset style="margin-top:10px;width:calc(100% - 40px);">
             <legend>Connectors:</legend>
             <button class="rfjobtargetsconnetorsearchbtn" ng-class="{'active':item.active}"
-                    ng-repeat="item in RFctrl.filterConnectors" ng-click="RFctrl.openConnector(item, $index)"
+                    ng-repeat="item in RFctrl.filterConnectors" ng-click="RFctrl.openConnector($index)"
                     id="{{item.id}}">
                 <img src="app/images/{{item.ico}}" class="rfjobtargetsconnetorimg">
                 <span class="rfjobtargetsconnetortxt">{{item.name}}</span>
@@ -31,300 +31,200 @@
             <div class="connector-title">{{RFctrl.connectorTitle}} Search Criteria</div>
 
             <div class="connector-filter-box cf">
-                <div ng-hide="RFctrl.openFilterToggle" class="connector-clude-box cf" ng-repeat="filter in RFctrl.filter">
+                <div ng-hide="RFctrl.openFilterToggle" class="connector-clude-box cf"
+                     ng-repeat="filterCrit in RFctrl.filterCrit">
                     <table class="connector-clude">
                         <tr>
-                            <th colspan="2">Include</th>
+                            <th colspan="2">{{$index === 0? 'Include': 'Exclude'}}</th>
                         </tr>
-                        <tr ng-repeat="item in filter">
-                            <td><a ng-click="RFctrl.openFilter(true,item)">{{item.FilterName}}</a></td>
+                        <tr ng-repeat="item in filterCrit">
+                            <td><a ng-click="RFctrl.openFilter(true,item,$parent.$index)">{{item.FilterName}}</a></td>
                             <td class="control">
                                 <a ng-click="RFctrl.delFilter(item)"><i class="table-icon ti-minus"></i></a>
-                                <a ng-click="RFctrl.openFilter(true,item)"><i class="table-icon ti-pen"></i></a>
+                                <a ng-click="RFctrl.openFilter(true,item,$parent.$index)"><i
+                                        class="table-icon ti-pen"></i></a>
                             </td>
                         </tr>
                     </table>
-                    <button class="btn" ng-click="RFctrl.openFilter(true)">Add Filter</button>
+                    <button class="btn" ng-click="RFctrl.openFilter(true,false,$index)">Add Filter</button>
                 </div>
 
                 <div ng-if="RFctrl.openFilterToggle" class="rfnewcontentconnectorinput">
-                    <table class="filter-input">
-                        <tbody>
+                    <form>
+                        <table class="filter-input connector-clude">
+                            <thead>
+                            <tr>
+                                <th colspan="2">{{RFctrl.filterClude.name}}</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="item in RFctrl.connectorTypes" ng-switch on="item.PropertType">
+                            <tr ng-switch-when="0">
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                <td>
+                                    <input type="number" style="width:calc(100% - 5px);"
+                                           ng-model="RFctrl.filterInputOptions[item.JsonName]">
+                                </td>
+                            </tr>
+                            <tr ng-switch-when="1">
 
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivefiltit">Filter Name:
-                            </td>
-                            <td>
-                                <input type="text" style="width:calc(100% - 5px);"
-                                       list="rfnewcontentconnectorgdrivefilter"
-                                       ng-model="RFctrl.filterInputOptions.FilterName"
-                                       id="rfnewconnectorgdriveinput">
-                                <datalist id="rfnewcontentconnectorgdrivefilter"></datalist>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivefilenametitl">File Name:
-                            </td>
-                            <td>
-                                <input id="rfnewconnectorgdrivefilename" type="text" style="width:calc(100% - 5px);">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdriveexttit">File
-                                Extension:
-                            </td>
-                            <td>
-                                    <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextaudio">
-                                        <span id="rfnewgdrivefiltergdriveexttitaudio"
-                                              style="margin-right:5px">Audio</span>
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                <td>
+                                    <div></div>
+                                    <input type="text" style="width:calc(100% - 5px);"
+                                           ng-model="RFctrl.filterInputOptions[item.JsonName]">
+                                </td>
+
+                            </tr>
+                            <tr ng-switch-when="2">
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                <td>
+                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
+                                        <option value="" ng-repeat="item in RFctrl.StringOperator" ng-value="item">
+                                            {{item}}
+                                        </option>
+                                    </select>
+                                    <span class="gdriveextentionnosplit" ng-repeat="type in item.Type">
+                                        <input type="checkbox"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Values[type]">
+                                        <span style="margin-right:5px">{{type}}</span>
                                     </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextdoc">
-                                        <span id="rfnewgdrivefilterextgdrivetitdoc"
-                                              style="margin-right:5px">Document</span>
+                                    <span ng-if="RFctrl.filterInputOptions[item.JsonName].Values.Other">
+                                         <input type="text" style="width:calc(100% - 0px);margin-top:20px" ng-model="RFctrl.filterInputOptions[item.JsonName].OtherType">
+                                         <span class="input-info input-info-keywords">Please fill in through separator ","</span>
                                     </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltegdriverextdraw">
-                                        <span id="rfnewgdrivefiltergdriveexttitdraw"
-                                              style="margin-right:5px">Drawing</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextform">
-                                        <span id="rfnewgdrivefilterexgdrivettitform"
-                                              style="margin-right:5px">Form</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextfile">
-                                        <span id="rfnewgdrivefiltergdriveexttitfile"
-                                              style="margin-right:5px">File</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextfus">
-                                        <span id="rfnewgdrivefiltergdriveexttitfus"
-                                              style="margin-right:5px">Fusiontable</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextpre">
-                                        <span id="rfnewgdrivefiltergdriveexttitpre" style="margin-right:5px">Presentation</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextphoto">
-                                        <span id="rfnewgdrivefiltergdriveexttitphoto"
-                                              style="margin-right:5px">Photo</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextxls">
-                                        <span id="rfnewgdrivefiltergdriveexttitxls"
-                                              style="margin-right:5px">Spreadsheet</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextscript">
-                                        <span id="rfnewgdrivefiltergdriveexttitscript"
-                                              style="margin-right:5px">Script</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextsites">
-                                        <span id="rfnewgdrivefiltergdriveexttitsites"
-                                              style="margin-right:5px">Sites</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextvideo">
-                                        <span id="rfnewgdrivefiltergdriveexttitvideo"
-                                              style="margin-right:5px">Video</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextunknown">
-                                        <span id="rfnewgdrivefiltergdriveexttitunknown"
-                                              style="margin-right:5px">Unknown</span>
-                                    </span>
-                                <span class="gdriveextentionnosplit">
-                                        <input type="checkbox" id="rfnewgdrivefiltergdriveextother">
-                                        <span id="rfnewgdrivefiltergdriveexttitother"
-                                              style="margin-right:5px">Other</span>
-                                    </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivemodifieddatetitl">File
-                                Modified Date:
-                            </td>
-                            <td>
-                                <select id="rfnewconnectorgdrivemodifieddataselect">
-                                    <option id="rfnewconnectorgdrivemodifieddataselectany" value="Any">Any</option>
-                                    <option id="rfnewconnectorgdrivemodifieddataselectsing" value="Single">Single
-                                    </option>
-                                    <option id="rfnewconnectorgdrivemodifieddataselectrang" value="Range">Range</option>
-                                </select>
-                                <span id="rfnewconnectorgdrivemodifieddataselectsingle" style="display:none">
-                                        <select id="rfnewconnectorgdrivemodifiedddatesingleselect">
-                                            <option id="rfnewconnectorgdrivemodifieddatesingleselectis" value="Equals">Is</option>
-                                            <option id="rfnewconnectorgdrivemodifieddatesingleselectbefore"
-                                                    value="Less Than">Before</option>
-                                            <option id="rfnewconnectorgdrivemodifieddatesingleselectafter"
-                                                    value="Greater Than">After</option>
-                                        </select>
-                                        <input id="rfnewconnectorgdrivemodifieddatesingle" type="date"
-                                               style="width:125px;height: 16px;">
-                                    </span>
-                                <span id="rfnewconnectorgdrivemodifieddataselectrange" style="display:none">
-                                        <select id="rfnewconnectorgdrivemodifieddaterangeselect">
-                                            <option id="rfnewconnectorgdrivemodifieddaterangeselectout"
-                                                    value="Date Outside">Date Outside</option>
-                                            <option id="rfnewconnectorgdrivemodifieddaterangeselectin"
-                                                    value="Date Between">Date Between</option>
-                                        </select>
-                                        <input id="rfnewconnectorgdrivemodifieddaterangefrom" type="date"
-                                               style="width:125px;height: 16px;">
+
+                                </td>
+                            </tr>
+                            <tr ng-switch-when="3">
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                <td>
+                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
+                                        <option value="" ng-repeat="item in RFctrl.ValueOperator" ng-value="item">
+                                            {{item}}
+                                        </option>
+                                    </select>
+                                    <input ng-if="item.Type === 'long'" type="number"
+                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Value">
+                                    <input ng-if="item.Type !== 'long'" type="checkbox"
+                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Value">
+
+
+                                </td>
+                            </tr>
+
+                            <tr ng-switch-when="4">
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                <td>
+                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
+                                            ng-change="RFctrl.filterInputOptions[item.JsonName] = RFctrl.UseValue2(RFctrl.filterInputOptions[item.JsonName])">
+                                        <option value="" ng-repeat="item in RFctrl.ValueOperator" ng-value="item">
+                                            {{item}}
+                                        </option>
+                                    </select>
+                                    <span ng-switch on="RFctrl.filterInputOptions[item.JsonName].Operator">
+                                    <span ng-switch-when="Between">
+                                        <input ng-if="item.Type === 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
+                                               type="number">
+                                        <input ng-if="item.Type !== 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
+                                               type="date">
                                         <span>to</span>
-                                        <input id="rfnewconnectorgdrivemodifieddaterangeto" type="date"
-                                               style="width:125px;height: 16px;">
+                                        <input ng-if="item.Type === 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value2"
+                                               type="number">
+                                        <input ng-if="item.Type !== 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value2"
+                                               type="date">
                                     </span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivelastdatetitl">Last
-                                Viewed By
-                                Me:
-                            </td>
-                            <td>
-                                <select id="rfnewconnectorgdrivelastdataselect">
-                                    <option id="rfnewconnectorgdrivelastdataselectany" value="Any">Any</option>
-                                    <option id="rfnewconnectorgdrivelastdataselectsing" value="Single">Single</option>
-                                    <option id="rfnewconnectorgdrivelastdataselectrang" value="Range">Range</option>
-                                </select>
-                                <span id="rfnewconnectorgdrivelastdataselectsingle" style="display:none">
-                                        <select id="rfnewconnectorgdrivelastdatesingleselect">
-                                            <option id="rfnewconnectorgdrivelastdatesingleselectis"
-                                                    value="Equals">Is</option>
-                                            <option id="rfnewconnectorgdrivelastdatesingleselectbefore"
-                                                    value="Less Than">Before</option>
-                                            <option id="rfnewconnectorgdrivelastdatesingleselectafter"
-                                                    value="Greater Than">After</option>
-                                        </select>
-                                        <input id="rfnewconnectorgdrivelastdatesingle" type="date"
-                                               style="width:125px;height: 16px;">
-                                    </span>
-                                <span id="rfnewconnectorgdrivelastdataselectrange" style="display:none">
-                                        <select id="rfnewconnectorgdrivelastdaterangeselect">
-                                            <option id="rfnewconnectorgdrivelastdaterangeselectout"
-                                                    value="Date Outside">Date Outside</option>
-                                            <option id="rfnewconnectorgdrivelastdaterangeselectin" value="Date Between">Date Between</option>
-                                        </select>
-                                        <input id="rfnewconnectorgdrivelastdaterangefrom" type="date"
-                                               style="width:125px;height: 16px;">
+                                    <span ng-switch-when="OutsideOf">
+                                        <input ng-if="item.Type === 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
+                                               type="number">
+                                        <input ng-if="item.Type !== 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
+                                               type="date">
                                         <span>to</span>
-                                        <input id="rfnewconnectorgdrivelastdaterangeto" type="date"
-                                               style="width:125px;height: 16px;">
+                                        <input ng-if="item.Type === 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value2"
+                                               type="number">
+                                        <input ng-if="item.Type !== 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value2"
+                                               type="date">
                                     </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdriveparentstit">File
-                                Parents:
-                            </td>
-                            <td>
-                                <input type="text" style="width:calc(100% - 5px);" id="rfnewconnectorgdriveparents">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdriveownertit">File Owners:
-                            </td>
-                            <td>
-                                <input type="text" style="width:calc(100% - 5px);" id="rfnewconnectorgdriveowner">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivewritertit">File Writers:
-                            </td>
-                            <td>
-                                <input type="text" style="width:calc(100% - 5px);" id="rfnewconnectorgdrivewriter">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivereadertit">File Readers:
-                            </td>
-                            <td>
-                                <input type="text" style="width:calc(100% - 5px);" id="rfnewconnectorgdrivereader">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivepropertiestit">File
-                                Properties:
-                            </td>
-                            <td>
-                                <input type="text" style="width:calc(100% - 5px);" id="rfnewconnectorgdriveproperties">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivetrashedtit">Trashed:
-                            </td>
-                            <td>
-                                <select id="rfnewconnectorgdrivetrashed">
-                                    <option id="rfnewconnectorgdrivetrashednone" value="none">--</option>
-                                    <option id="rfnewconnectorgdrivetrashedis" value="is">Is</option>
-                                    <option id="rfnewconnectorgdrivetrashedisnot" value="isnot">Is Not</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivestarredtit">Starred:
-                            </td>
-                            <td>
-                                <select id="rfnewconnectorgdrivestarred">
-                                    <option id="rfnewconnectorgdrivestarrednone" value="none">--</option>
-                                    <option id="rfnewconnectorgdrivestarredis" value="is">Is</option>
-                                    <option id="rfnewconnectorgdrivestarredisnot" value="isnot">Is Not</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <!--                                            <tr>
-                                                      <td class='rfnewcontentconnectortablestyle' id='rfnewconnectorgdrivesharedtit'>Shared:</td>
-                                                      <td>
-                                                            <select id='rfnewconnectorgdriveshared'>
-                                                                  <option id='rfnewconnectorgdrivesharednone' value='none'>--</option>
-                                                                  <option id='rfnewconnectorgdrivesharedis' value='is'>Is</option>
-                                                                  <option id='rfnewconnectorgdrivesharedisnot' value='isnot'>Is Not</option>
-                                                            </select>
-                                                      </td>
-                                                      </tr>-->
-                        <tr>
-                            <td class="rfnewcontentconnectortablestyle" id="rfnewconnectorgdrivewordstit">Key Words:
-                            </td>
-                            <td>
-                                <select id="rfnewconnectorgdrivewordsselect">
-                                    <option id="rfnewconnectorgdrivewordsselectany" value="Any">Any</option>
-                                    <option id="rfnewconnectorgdrivewordsselectall" value="All">All</option>
-                                </select>
-                                <input type="text" style="width:calc(100% - 75px);" id="rfnewconnectorgdrivewords">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div class="btn-block">
-                        <button class="btn">Save</button>
-                        <button class="btn" ng-click="RFctrl.openFilter(false)">Cancel</button>
-                    </div>
+                                        <span ng-switch-default>
+                                         <input ng-if="item.Type === 'long'"
+                                                ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
+                                                type="number">
+                                        <input ng-if="item.Type !== 'long'"
+                                               ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
+                                               type="date">
+                                    </span>
+                                </span>
+                                </td>
+                            </tr>
 
+                            <tr ng-switch-when="5">
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:
+                                </td>
+                                <td>
+                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
+                                        <option value="" ng-repeat="item in RFctrl.StringKeywordOperator"
+                                                ng-value="item">{{item}}
+                                        </option>
+                                    </select>
+                                    <input type="text" style="width:calc(100% - 75px);"
+                                           ng-model="RFctrl.filterInputOptions[item.JsonName].keywords">
+                                    <span class="input-info input-info-keywords">Please fill in through separator ","</span>
+                                </td>
+                            </tr>
+
+                            <tr ng-switch-when="6">
+                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                <td>
+                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
+                                        <option value="" ng-repeat="item in RFctrl.StringKeywordOperator"
+                                                ng-value="item">{{item}}
+                                        </option>
+                                    </select>
+                                    <input type="text" style="width:calc(100% - 75px);"
+                                           ng-model="RFctrl.filterInputOptions[item.JsonName].keywords">
+                                    <span class="input-info input-info-keywords">Please fill in through separator ","</span>
+                                </td>
+                            </tr>
+
+
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="btn-block">
+                                        <button class="btn" ng-click="RFctrl.saveFilter()">Save</button>
+                                        <button class="btn" ng-click="RFctrl.openFilter(false)">Cancel</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </form>
 
                 </div>
 
 
-                <div id="rfnewcontentconnectorinputbox" class="rfnewcontentconnectorinput" style="display:none">Box
-                </div>
-                <div id="rfnewcontentconnectorinputgoogledrive" class="rfnewcontentconnectorinput"
-                     style="display: none;">
+                <!--<div id="rfnewcontentconnectorinputbox" class="rfnewcontentconnectorinput" style="display:none">Box-->
+                <!--</div>-->
+                <!--<div id="rfnewcontentconnectorinputgoogledrive" class="rfnewcontentconnectorinput"-->
+                <!--style="display: none;">-->
 
-                    <table style="width: 100%;">
-                        <colgroup>
-                            <col width="150">
-                            <col>
-                        </colgroup>
+                <!--<table style="width: 100%;">-->
+                <!--<colgroup>-->
+                <!--<col width="150">-->
+                <!--<col>-->
+                <!--</colgroup>-->
 
-                    </table>
+                <!--</table>-->
 
-                </div>
+                <!--</div>-->
 
             </div>
 
