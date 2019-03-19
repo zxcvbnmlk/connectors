@@ -12,15 +12,7 @@ html, body {
   padding: 0px;
 }
 
-.rfjobtargetsconnetorsearchbtn{
-    border-radius: 5px;
-    padding: 5px;
-    width: 150px;
-    background: white;
-}
-.rfjobtargetsconnetorsearchbtn:hover,.rfjobtargetsconnetorsearchbtn.active{
-    background: lightgoldenrodyellow;
-}
+
 .rfjobtargetsconnetorimg {
     height: 25px;
 }
@@ -45,7 +37,15 @@ html, body {
 .cf,.k-reset {
     *zoom:1}
 
-
+.connetor-btn{
+    border-radius: 5px;
+    padding: 5px;
+    width: 150px;
+    background: white;
+}
+.connetor-btn:hover,.connetor-btn.active{
+    background: lightgoldenrodyellow;
+}
 .connector-title {
   margin:20px 0 30px;
   text-align:center;
@@ -73,7 +73,7 @@ table.connector-clude {
  border-collapse: collapse;
  width:100%;
  margin-bottom:20px;
-
+ height: auto;
 }
 table.connector-clude tr th{
   background: #f6f6f6;
@@ -99,7 +99,19 @@ table.connector-clude tr td.control a{
   display:inline-block;
   margin:2px;
 }
-
+table.filter-input .slide-table > tr > td{
+  padding:0;
+}
+.slide-table table {
+  height: 500px;
+  overflow: auto;
+  width: 100%;
+  display: block;
+}
+.slide-table table tbody {
+  width: 100%;
+  display: table;
+}
 table.filter-input tr td{
   padding-bottom: 10px;
   padding-top: 10px;

@@ -13,11 +13,13 @@
 </head>
 
 <body ng-cloak layout="column" ng-controller="AppController as RFctrl">
-<div id="rfnewcontentconnector" class="rfnewcontentdiv rfnewnavwizcontentshown">
+<div id="rfnewcontentconnector" class="">
+    <button ng-click="RFctrl.rewriteFilters(0)">rewriteFilters</button>
+    <button ng-click="RFctrl.conCheck()">conCheck</button>
     <div id="rfnewcontentconnectorwrapper" style="width:100%;height:100%;">
         <fieldset style="margin-top:10px;width:calc(100% - 40px);">
             <legend>Connectors:</legend>
-            <button class="rfjobtargetsconnetorsearchbtn" ng-class="{'active':item.active}"
+            <button class="connetor-btn" ng-class="{'active':item.active}"
                     ng-repeat="item in RFctrl.filterConnectors" ng-click="RFctrl.openConnector($index)"
                     id="{{item.id}}">
                 <img src="app/images/{{item.ico}}" class="rfjobtargetsconnetorimg">
@@ -50,78 +52,86 @@
                 </div>
 
                 <div ng-if="RFctrl.openFilterToggle" class="rfnewcontentconnectorinput">
-                    <form>
+                    <form  ng-submit="RFctrl.saveFilter()">
                         <table class="filter-input connector-clude">
                             <thead>
                             <tr>
                                 <th colspan="2">{{RFctrl.filterClude.name}}</th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="item in RFctrl.connectorTypes" ng-switch on="item.PropertType">
-                            <tr ng-switch-when="0">
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
-                                <td>
-                                    <input type="number" style="width:calc(100% - 5px);"
-                                           ng-model="RFctrl.filterInputOptions[item.JsonName]">
-                                </td>
-                            </tr>
-                            <tr ng-switch-when="1">
+                            <tbody class="slide-table">
+                                <tr>
+                                    <td colspan="2">
+                                        <table>
+                                            <tbody ng-repeat="item in RFctrl.connectorTypes" ng-switch on="item.PropertyType">
+                                            <tr ng-switch-when="0">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                                <td>
+                                                    <input type="number" style="width:calc(100% - 5px);"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName]">
 
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
-                                <td>
-                                    <div></div>
-                                    <input type="text" style="width:calc(100% - 5px);"
-                                           ng-model="RFctrl.filterInputOptions[item.JsonName]">
-                                </td>
+                                                </td>
+                                            </tr>
+                                            <tr ng-switch-when="1">
 
-                            </tr>
-                            <tr ng-switch-when="2">
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
-                                <td>
-                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
-                                        <option value="" ng-repeat="item in RFctrl.StringOperator" ng-value="item">
-                                            {{item}}
-                                        </option>
-                                    </select>
-                                    <span class="gdriveextentionnosplit" ng-repeat="type in item.Type">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                                <td>
+                                                    <input type="text" style="width:calc(100% - 5px);"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName]"
+                                                           ng-required="item.JsonName === 'FilterName'">
+
+                                                </td>
+
+                                            </tr>
+                                            <tr ng-switch-when="2">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                                <td>
+                                                    <input type="hidden"  ng-model="RFctrl.filterInputOptions[item.JsonName].PropertyType"  ng-init="RFctrl.filterInputOptions[item.JsonName].PropertyType = item.PropertyType">
+                                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
+                                                            ng-init="RFctrl.filterInputOptions[item.JsonName].Operator = RFctrl.filterInputOptions[item.JsonName].Operator || RFctrl.StringOperator[0]"
+                                                            ng-options="item for item in RFctrl.StringOperator">
+                                                    </select>
+                                                    <input type="text" style="width:calc(100% - 135px);"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Values" ng-if="item.Type === null">
+                                                    <span class="gdriveextentionnosplit" ng-repeat="type in item.Type" ng-if="item.Type !== null">
                                         <input type="checkbox"
                                                ng-model="RFctrl.filterInputOptions[item.JsonName].Values[type]">
                                         <span style="margin-right:5px">{{type}}</span>
                                     </span>
-                                    <span ng-if="RFctrl.filterInputOptions[item.JsonName].Values.Other">
+                                                    <span ng-if="RFctrl.filterInputOptions[item.JsonName].Values.Other">
                                          <input type="text" style="width:calc(100% - 0px);margin-top:20px" ng-model="RFctrl.filterInputOptions[item.JsonName].OtherType">
                                          <span class="input-info input-info-keywords">Please fill in through separator ","</span>
                                     </span>
 
-                                </td>
-                            </tr>
-                            <tr ng-switch-when="3">
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
-                                <td>
-                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
-                                        <option value="" ng-repeat="item in RFctrl.ValueOperator" ng-value="item">
-                                            {{item}}
-                                        </option>
-                                    </select>
-                                    <input ng-if="item.Type === 'long'" type="number"
-                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Value">
-                                    <input ng-if="item.Type !== 'long'" type="checkbox"
-                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Value">
+                                                </td>
+                                            </tr>
+                                            <tr ng-switch-when="3">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                                <td>
+                                                    <input type="hidden"  ng-model="RFctrl.filterInputOptions[item.JsonName].PropertyType"  ng-init="RFctrl.filterInputOptions[item.JsonName].PropertyType = item.PropertyType">
+                                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
+                                                            ng-init="RFctrl.filterInputOptions[item.JsonName].Operator = RFctrl.filterInputOptions[item.JsonName].Operator || RFctrl.ValueOperatorSingle[0]"
+                                                            ng-options="item for item in RFctrl.ValueOperatorSingle">
+                                                    </select>
+                                                    <input ng-if="item.Type === 'long'" type="number"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Value">
+                                                    <input ng-if="item.Type !== 'long'" type="checkbox"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Value">
 
 
-                                </td>
-                            </tr>
+                                                </td>
+                                            </tr>
 
-                            <tr ng-switch-when="4">
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
-                                <td>
-                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
-                                            ng-change="RFctrl.filterInputOptions[item.JsonName] = RFctrl.UseValue2(RFctrl.filterInputOptions[item.JsonName])">
-                                        <option value="" ng-repeat="item in RFctrl.ValueOperator" ng-value="item">
-                                            {{item}}
-                                        </option>
-                                    </select>
-                                    <span ng-switch on="RFctrl.filterInputOptions[item.JsonName].Operator">
+                                            <tr ng-switch-when="4">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                                <td>
+                                                    <input type="hidden"  ng-model="RFctrl.filterInputOptions[item.JsonName].PropertyType"  ng-init="RFctrl.filterInputOptions[item.JsonName].PropertyType = item.PropertyType">
+                                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
+                                                            ng-change="RFctrl.filterInputOptions[item.JsonName] = RFctrl.UseValue2(RFctrl.filterInputOptions[item.JsonName])"
+                                                            ng-init="RFctrl.filterInputOptions[item.JsonName].Operator = RFctrl.filterInputOptions[item.JsonName].Operator || RFctrl.ValueOperator[0]"
+                                                            ng-options="item for item in RFctrl.ValueOperator">
+                                                    </select>
+                                                    <span ng-switch on="RFctrl.filterInputOptions[item.JsonName].Operator">
                                     <span ng-switch-when="Between">
                                         <input ng-if="item.Type === 'long'"
                                                ng-model="RFctrl.filterInputOptions[item.JsonName].Value"
@@ -161,45 +171,50 @@
                                                type="date">
                                     </span>
                                 </span>
-                                </td>
-                            </tr>
+                                                </td>
+                                            </tr>
 
-                            <tr ng-switch-when="5">
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:
-                                </td>
-                                <td>
-                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
-                                        <option value="" ng-repeat="item in RFctrl.StringKeywordOperator"
-                                                ng-value="item">{{item}}
-                                        </option>
-                                    </select>
-                                    <input type="text" style="width:calc(100% - 75px);"
-                                           ng-model="RFctrl.filterInputOptions[item.JsonName].keywords">
-                                    <span class="input-info input-info-keywords">Please fill in through separator ","</span>
-                                </td>
-                            </tr>
+                                            <tr ng-switch-when="5">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:
+                                                </td>
+                                                <td>
+                                                    <input type="hidden"  ng-model="RFctrl.filterInputOptions[item.JsonName].PropertyType"  ng-init="RFctrl.filterInputOptions[item.JsonName].PropertyType = item.PropertyType">
+                                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
+                                                            ng-init="RFctrl.filterInputOptions[item.JsonName].Operator = RFctrl.filterInputOptions[item.JsonName].Operator || RFctrl.StringKeywordOperator[0]"
+                                                            ng-options="item for item in RFctrl.StringKeywordOperator">
+                                                    </select>
+                                                    <input type="text" style="width:calc(100% - 75px);"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Values">
+                                                    <span class="input-info input-info-keywords">Please fill in through separator ","</span>
+                                                </td>
+                                            </tr>
 
-                            <tr ng-switch-when="6">
-                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
-                                <td>
-                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator">
-                                        <option value="" ng-repeat="item in RFctrl.StringKeywordOperator"
-                                                ng-value="item">{{item}}
-                                        </option>
-                                    </select>
-                                    <input type="text" style="width:calc(100% - 75px);"
-                                           ng-model="RFctrl.filterInputOptions[item.JsonName].keywords">
-                                    <span class="input-info input-info-keywords">Please fill in through separator ","</span>
-                                </td>
-                            </tr>
+                                            <tr ng-switch-when="6">
+                                                <td class="rfnewcontentconnectortablestyle">{{item.PropertyName}}:</td>
+                                                <td>
+                                                    <input type="hidden"  ng-model="RFctrl.filterInputOptions[item.JsonName].PropertyType"  ng-init="RFctrl.filterInputOptions[item.JsonName].PropertyType = item.PropertyType">
+                                                    <select ng-model="RFctrl.filterInputOptions[item.JsonName].Operator"
+                                                            ng-init="RFctrl.filterInputOptions[item.JsonName].Operator = RFctrl.filterInputOptions[item.JsonName].Operator || RFctrl.StringKeywordOperator[0]"
+                                                            ng-options="item for item in RFctrl.StringKeywordOperator">
+                                                    </select>
+                                                    <input type="text" style="width:calc(100% - 75px);"
+                                                           ng-model="RFctrl.filterInputOptions[item.JsonName].Values">
+                                                    <span class="input-info input-info-keywords">Please fill in through separator ","</span>
+                                                </td>
+                                            </tr>
 
 
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
                             </tbody>
+
                             <tfoot>
                             <tr>
                                 <td colspan="2">
                                     <div class="btn-block">
-                                        <button class="btn" ng-click="RFctrl.saveFilter()">Save</button>
+                                        <button type="submit" class="btn" >Save</button>
                                         <button class="btn" ng-click="RFctrl.openFilter(false)">Cancel</button>
                                     </div>
                                 </td>
