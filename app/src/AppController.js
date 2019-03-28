@@ -111,11 +111,15 @@ const connectorsArr = [
         ConnectorType: 0,
         JsonName: "box",
         ico: "connector_box.png",
+        urlJob: 'cases/{caseId}/submitboxjob',
+        urlSave: 'saveboxconfig',
         filterCrit: {0: [], 1: []},
     },
     {
         name: "Docus Share",
         ConnectorType: 1,
+        urlJob: 'docushare/{caseId}/filesearch',
+        urlSave: 'savedocushareconfig',
         JsonName: "docushare",
         ico: "connector_docushare.png",
         filterCrit: {0: [], 1: []},
@@ -123,6 +127,8 @@ const connectorsArr = [
     {
         name: "Druva",
         ConnectorType: 2,
+        urlJob: 'druva/{caseId}/filesearch',
+        urlSave: 'savedruvaconfig',
         JsonName: "druva",
         ico: "connector_druva.png",
         filterCrit: {0: [], 1: []},
@@ -130,6 +136,8 @@ const connectorsArr = [
     {
         name: "Enterprise Vault",
         ConnectorType: 3,
+        urlJob: 'cases/{caseId}/submitenterprisevault',
+        urlSave: 'saveenterprisevaultconfig',
         JsonName: "enterprisevault",
         ico: "connector_enterprisevault.png",
         filterCrit: {0: [], 1: []},
@@ -138,26 +146,34 @@ const connectorsArr = [
         name: "Google Drive",
         ConnectorType: 4,
         JsonName: "googledrive",
+        urlJob: 'cases/{caseId}/submitgdrivejob',
+        urlSave: 'savegdriveconfig',
         ico: "connector_googledrive.png",
         filterCrit: {0: [], 1: []},
     },
     {
         name: "Gmail",
         ConnectorType: 5,
+        urlJob: 'gmailadmin/{caseId}/filesearch',
+        urlSave: 'savegmailadminconfig',
         JsonName: "gmail",
         ico: "connector_gmail.png",
         filterCrit: {0: [], 1: []},
     },
     {
-        name: "Open text",
+        name: "Open Text (LiveLink)",
         ConnectorType: 6,
-        JsonName: "livelink ",
-        ico: "connector_googledrive.png",
+        urlJob: 'livelink/{caseId}/filesearch',
+        urlSave: 'savelivelinkconfig',
+        JsonName: "opentext",
+        ico: "connector_opentext.png",
         filterCrit: {0: [], 1: []},
     },
     {
         name: "One Drive",
         ConnectorType: 7,
+        urlJob: 'cases/{caseId}/submitonedrivejob',
+        urlSave: 'saveonedriveconfig',
         JsonName: "onedrive",
         ico: "connector_onedrive.png",
         filterCrit: {0: [], 1: []},
@@ -165,27 +181,35 @@ const connectorsArr = [
     {
         name: "Oracle Urm",
         ConnectorType: 8,
+        urlJob: 'oracleurm/{caseId}/filesearch',
+        urlSave: 'saveoracleurmconfig',
         JsonName: "oracleurm",
-        ico: "connector_googledrive.png",
+        ico: "connector_oracleurm.png",
         filterCrit: {0: [], 1: []},
     },
     {
         name: "AWSS3",
         ConnectorType: 9,
-        JsonName: "AWSS3",
-        ico: "connector_googledrive.png",
+        urlJob: '',
+        urlSave: '',
+        JsonName: "awss3",
+        ico: "connector_awss3.png",
         filterCrit: {0: [], 1: []},
     },
     {
         name: "Salesforce",
         ConnectorType: 10,
+        urlJob: 'salesforce/{caseId}/filesearch',
+        urlSave: 'savesalesforceconfig',
         JsonName: "salesforce",
-        ico: "connector_googledrive.png",
+        ico: "connector_salesforce.png",
         filterCrit: {0: [], 1: []},
     },
     {
         name: "Share Point",
         ConnectorType: 11,
+        urlJob: 'cases/{caseId}/submitsharepointjob',
+        urlSave: 'savesharepointconfig',
         JsonName: "sharepoint",
         ico: "connector_sharepoint.png",
         filterCrit: {0: [], 1: []},
@@ -193,28 +217,36 @@ const connectorsArr = [
     {
         name: "CMIS",
         ConnectorType: 12,
+        urlJob: 'cases/{caseId}/submitcmisjob',
+        urlSave: '',
         JsonName: "cmis",
         ico: "connector_cmis.png",
         filterCrit: {0: [], 1: []},
     },
     {
-        name: "Exchange",
+        name: "Exchange (EWS)",
         ConnectorType: 13,
+        urlJob: 'cases/{caseId}/submitewscollector',
+        urlSave: '',
         JsonName: "exchange",
         ico: "connector_exchange.png",
         filterCrit: {0: [], 1: []},
     },
     {
-        name: "Cloud Mail",
+        name: "Cloud Mail (ImapPop)",
         ConnectorType: 14,
-        JsonName: "imappop",
-        ico: "connector_googledrive.png",
+        urlJob: 'imappop/{caseId}/filesearch',
+        urlSave: '',
+        JsonName: "cloudmail",
+        ico: "connector_couldmail.png",
         filterCrit: {0: [], 1: []},
-    },{
+    }, {
         name: "File Net",
         ConnectorType: 15,
+        urlJob: '',
+        urlSave: '',
         JsonName: "filenet",
-        ico: "connector_googledrive.png",
+        ico: "connector_filenet.png",
         filterCrit: {0: [], 1: []},
     }
 ];
@@ -226,12 +258,241 @@ function AppController() {
     _this.filterConnectors = [];
 
 
-    var ConnectorType = ["box", "googledrive","CMIS"];
+    var ConnectorType = ["filenet", "salesforce", "box","oracleurm","awss3"];
 
     function diffResult(a1, a2) {
         return a1.filter(i => a2.includes(i.JsonName))
     };
 
+    _this.filterConnectors = [
+        {
+            ConnectorType: 4,
+            JsonName: "googledrive",
+            active: true,
+            urlJob: 'cases/{caseId}/submitboxjob',
+            urlSave: 'saveboxconfig',
+            filterCrit: {
+                0: [{
+                    Name: 'ert',
+                    FilterName: 'dddd',
+                    Created: {PropertyType: 4, Operator: "Equals", Value: null},
+                    Extension: {PropertyType: 2, Operator: "Contains"},
+                    Extension1: {PropertyType: 2, Operator: "Contains"}
+                },], 1: []
+            },
+            ico: "connector_googledrive.png",
+            name: "Google Drive",
+        },
+        {
+            ConnectorType: 4,
+            JsonName: "box",
+            active: true,
+            urlJob: 'cases/{caseId}/submitboxjob',
+            urlSave: 'saveboxconfig',
+            filterCrit: {
+                0: [], 1: []
+            },
+            ico: "connector_googledrive.png",
+            name: "box",
+        },
+
+    ]
+    var connectorSearches = [
+        {
+            connector: "googledrive",
+            search: {
+                ConfigName: "my",
+                ItemType: 22,
+                UserName: ""
+            }
+        },
+        {
+            connector: "googledrive",
+            search: {
+                ConfigName: "my2",
+                ItemType: 22,
+                UserName: ""
+            }
+        },
+        {
+            connector: "box",
+            search: {
+                ConfigName: "my2",
+                ItemType: 22,
+                UserName: ""
+            }
+        }
+    ]
+
+    console.log('connectorSearches', connectorSearches);
+    console.log('this.filterConnectors', _this.filterConnectors);
+
+
+    _this.rewriteFilters = function (ConnectorType) {
+        console.log('ConnectorType11', ConnectorType)
+        // var connector = _this.filterConnectors.filter(item => item.ConnectorType === ConnectorType)[0];
+        var connector = ConnectorType;
+        console.log("connector", connector);
+
+
+
+        for (let i = 0; i < 2; i++) {
+            connector.filterCrit[i].forEach(filterCrit => {
+                // console.log("filterCrit", filterCrit)
+
+                filterCrit = Object.keys(filterCrit).map(function (key) {
+                    console.log("filterCrit[key] case", filterCrit[key]);
+                    if (filterCrit[key] == "") {
+                        delete filterCrit[key]
+                    } else if (filterCrit[key].hasOwnProperty("Values") && filterCrit[key].Values === []) {
+                        delete filterCrit[key]
+                    } else if (filterCrit[key].hasOwnProperty("Value") && filterCrit[key].Value === null) {
+                        delete filterCrit[key]
+                    } else if (filterCrit[key].hasOwnProperty("PropertyType")) {
+
+                        switch (filterCrit[key].PropertyType) {
+                            case 2:
+                                if (!filterCrit[key].hasOwnProperty("Values")) {
+                                    delete filterCrit[key];
+                                    break;
+                                }
+                                var Values;
+                                console.log('typeof filterCrit[key].Values', typeof filterCrit[key].Values)
+                                if (typeof filterCrit[key].Values === 'string') {
+
+
+                                    Values = typeof filterCrit[key].Values === 'string' ? filterCrit[key].Values.split(",") : filterCrit[key].Values;
+                                    console.log('Values', Values)
+                                } else {
+                                    var OtherType = [];
+                                    var valPr = Object.keys(filterCrit[key].Values);
+                                    if (valPr.indexOf("Other") !== -1) {
+                                        OtherType = filterCrit[key].hasOwnProperty("OtherType") ? filterCrit[key].OtherType.split(",") : [];
+
+                                        valPr.splice(valPr.indexOf("Other"), 1);
+                                    }
+                                    Values = valPr.concat(OtherType);
+                                    console.log('Values', Values)
+                                }
+
+                                Values.forEach((item, i) => {
+                                    if (item === "") {
+                                        Values.splice(i, 1);
+                                    }
+                                });
+                                var ValuesTrim = Values.map(item => {
+                                    return item.trim()
+                                });
+                                filterCrit[key] = {
+                                    Values: ValuesTrim,
+                                    Operator: filterCrit[key].Operator
+                                };
+                                console.log(' filterCrit[key].Values', filterCrit[key].Values);
+                                break;
+                            case 3:
+                                if (!filterCrit[key].hasOwnProperty("Value") || !filterCrit[key].Value) {
+                                    delete filterCrit[key];
+                                    break;
+                                }
+                                break;
+                            case 4:
+                                if (!filterCrit[key].hasOwnProperty("Value")) {
+                                    delete filterCrit[key];
+                                    break;
+                                }
+
+                                break;
+                            case 5:
+                                if (!filterCrit[key].hasOwnProperty("Values")) {
+                                    delete filterCrit[key];
+                                    break;
+                                }
+                                var Values = typeof filterCrit[key].Values === 'string' ? filterCrit[key].Values.split(",") : filterCrit[key].Values;
+                                Values.forEach((item, i) => {
+                                    if (item === "") {
+                                        Values.splice(i, 1);
+                                    }
+                                });
+                                var ValuesTrim = Values.map(item => {
+                                    return item.trim()
+                                });
+                                filterCrit[key] = {
+                                    Values: ValuesTrim,
+                                    Operator: filterCrit[key].Operator
+                                };
+                                break;
+                            case 6:
+                                if (!filterCrit[key].hasOwnProperty("Values")) {
+                                    delete filterCrit[key];
+                                    break;
+                                }
+                                var Values = typeof filterCrit[key].Values === 'string' ? filterCrit[key].Values.split(",") : filterCrit[key].Values;
+                                Values.forEach((item, i) => {
+                                    if (item === "") {
+                                        Values.splice(i, 1);
+                                    }
+                                });
+                                var ValuesTrim = Values.map(item => {
+                                    return item.trim()
+                                });
+                                filterCrit[key] = {
+                                    Values: ValuesTrim,
+                                    Operator: filterCrit[key].Operator
+                                }
+                                break;
+
+
+                        }
+                    }
+
+                    return filterCrit[key];
+                });
+
+
+            });
+        }
+        console.log("connector", connector.filterCrit)
+        return connector.filterCrit
+
+
+    };
+
+    var caseId = 1;
+    var hasFilter = [];
+    // connectorSearches.forEach(connectorSearch => {
+    //     _this.filterConnectors.forEach(filterConnector => {
+    //         console.log('filterConnector.filterCrit[0]', filterConnector.filterCrit[0]);
+    //         if (connectorSearch.connector === filterConnector.JsonName && filterConnector.filterCrit[0].length > 0 ||
+    //             connectorSearch.connector === filterConnector.JsonName && filterConnector.filterCrit[1].length > 0
+    //         ) {
+    //             console.log('filterConnector', filterConnector);
+    //             hasFilter.push(connectorSearch);
+    //             var filterConnectorMody = _this.rewriteFilters(filterConnector);
+    //             console.log('filterConnector mody', filterConnector);
+    //             var args = {
+    //                 filter: {
+    //                     InclusionCriteria: filterConnectorMody[0],
+    //                     ExclusionCriteria: filterConnectorMody[1],
+    //                 },
+    //                 ConfigName: connectorSearch.search.ConfigName,
+    //                 ItemType: connectorSearch.search.ItemType,
+    //                 UserName: connectorSearch.search.UserName,
+    //             };
+    //
+    //             var url = filterConnector.urlJob.replace('{caseId}', caseId);
+    //             console.log(url, args);
+    //             // this.apiServer.post(url, args).then(function (result) {
+    //             //     _this.remoteForensicsService.getQuincAgentJobs();
+    //             //     _this.reviewService.userMessage("One Drive Collection Started");
+    //             // }, function (err) {
+    //             //     _this.remoteForensicsService.getQuincAgentJobs();
+    //             //     _this.reviewService.userMessage("One Drive Collection Failed");
+    //             // });
+    //         }
+    //     })
+    //
+    // });
+    // console.log('hasFilter', hasFilter);
     _this.conCheck = function () {
 
         if (_this.filterConnectors === []) {
@@ -262,96 +523,6 @@ function AppController() {
 
 
     _this.filterClude = [];
-
-
-    _this.rewriteFilters = function (ConnectorType) {
-        // ConnectorType
-
-        var connector = _this.filterConnectors.filter(item => item.ConnectorType === ConnectorType)[0];
-        console.log("connector", connector)
-        for (let i = 0; i < 2; i++) {
-            connector.filterCrit[i].forEach(filterCrit => {
-                // console.log("filterCrit", filterCrit)
-
-                filterCrit = Object.keys(filterCrit).map(function (key) {
-                    console.log("filterCrit[key] case", filterCrit[key]);
-                    if (filterCrit[key] == "") {
-                        delete filterCrit[key]
-                    } else if (filterCrit[key].hasOwnProperty("Values") && filterCrit[key].Values === []) {
-                        delete filterCrit[key]
-                    } else if (filterCrit[key].hasOwnProperty("Value") && filterCrit[key].Value === null) {
-                        delete filterCrit[key]
-                    } else if (filterCrit[key].hasOwnProperty("PropertyType")) {
-
-                        switch (filterCrit[key].PropertyType) {
-                            case 2:
-                                if (!filterCrit[key].hasOwnProperty("Values")) {
-                                    delete filterCrit[key];
-                                    break;
-                                }
-                                var OtherType = [];
-                                var Values = Object.keys(filterCrit[key].Values);
-                                if (Values.indexOf("Other") !== -1) {
-                                    OtherType = filterCrit[key].hasOwnProperty("OtherType") ? filterCrit[key].OtherType.split(",") : [];
-
-                                    Values.splice(Values.indexOf("Other"), 1);
-                                }
-
-                                filterCrit[key] = {
-                                    Values: Values.concat(OtherType),
-                                    Operator: filterCrit[key].Operator
-                                };
-                                filterCrit[key].Values.splice(filterCrit[key].Values.indexOf(""), 1);
-                                break;
-                            case 3:
-                                if (!filterCrit[key].hasOwnProperty("Value")) {
-                                    delete filterCrit[key];
-                                    break;
-                                }
-
-                                break;
-                            case 4:
-                                if (!filterCrit[key].hasOwnProperty("Value")) {
-                                    delete filterCrit[key];
-                                    break;
-                                }
-
-                                break;
-                            case 5:
-                                if (!filterCrit[key].hasOwnProperty("Values")) {
-                                    delete filterCrit[key];
-                                    break;
-                                }
-                                filterCrit[key] = {
-                                    Values: filterCrit[key].Values.split(","),
-                                    Operator: filterCrit[key].Operator
-                                }
-                                break;
-                            case 6:
-                                if (!filterCrit[key].hasOwnProperty("Values")) {
-                                    delete filterCrit[key];
-                                    break;
-                                }
-                                filterCrit[key] = {
-                                    Values: filterCrit[key].Values.split(","),
-                                    Operator: filterCrit[key].Operator
-                                }
-                                break;
-
-
-                        }
-                    }
-
-                    return filterCrit[key];
-                });
-
-
-            });
-        }
-
-        console.log("connector", connector.filterCrit)
-
-    };
 
 
     _this.StringOperator = ["Contains", "DoesNotContain"];

@@ -122,10 +122,22 @@ table.filter-input tr td{
 }
 .filter-input select {
   height: 23px;
+  width: 150px;
 }
+
 .filter-input input[type="date"],.filter-input input[type="number"] {
-  width: 125px;
-  height: 16px;
+  width: 146px;
+  height: 17px;
+}
+.filter-input input[type="date"] {
+  height: 19px;
+}
+.filter-input td > input[type="text"] {
+  width: calc(100% - 5px);
+}
+.filter-input input[type="text"] {
+  width: calc(100% - 159px);
+  height: 17px;
 }
 
 .filter-input.connector-clude .rfnewcontentconnectortablestyle {
