@@ -257,8 +257,48 @@ function AppController() {
 
     _this.filterConnectors = [];
 
+    const obj = {
+        'filenet': {
+            'columns': [
+                {field: "name", title: "Name", attributes: {style: 'white-space: nowrap '}},
+            ],
+            'attributes': [
+                {field: "name", type: 'text', title: "Name"},
+            ],
+            'name': 'File Net'
+        },
+        'salesforce': {
+            'columns': [
+                {field: "name", title: "Name", attributes: {style: 'white-space: nowrap '}},
+            ],
+            'attributes': [
+                {field: "name", type: 'text', title: "Name"},
+            ],
+            'name': 'Salesforce'
+        },
+        'awss3': {
+            'columns': [
+                {field: "name", title: "Name", attributes: {style: 'white-space: nowrap '}},
+            ],
+            'attributes': [
+                {field: "name", type: 'text', title: "Name"},
+            ],
+            'name': 'AWSS3'
+        },
+        'oracleurm': {
+            'columns': [
+                {field: "name", title: "Name", attributes: {style: 'white-space: nowrap '}},
+            ],
+            'attributes': [
+                {field: "name", type: 'text', title: "Name"},
+            ],
+            'name': 'Oracle Urm'
+        }
+    };
 
-    var ConnectorType = ["filenet", "salesforce", "box","oracleurm","awss3"];
+
+
+    var ConnectorType = ["filenet", "salesforce", "box", "oracleurm", "awss3"];
 
     function diffResult(a1, a2) {
         return a1.filter(i => a2.includes(i.JsonName))
@@ -297,6 +337,13 @@ function AppController() {
         },
 
     ]
+
+    _this.ConnectorParams = [{name:'sdfsdfsfd', value:''},
+        {name:'sdfsdfsfd', value:''},]
+    _this.ConnectorParamsGet = function (item) {
+        console.log('item',item)
+
+    }
     var connectorSearches = [
         {
             connector: "googledrive",
@@ -317,13 +364,29 @@ function AppController() {
         {
             connector: "box",
             search: {
+                ConfigName: "my222",
+                ItemType: 22,
+                UserName: ""
+            }
+        },
+        {
+            connector: "box",
+            search: {
                 ConfigName: "my2",
                 ItemType: 22,
                 UserName: ""
             }
         }
     ]
+    let parceJson = '"{\\"totalRows\\":1,\\"data\\":\\"[{\\\\\\"dataSourceId\\\\\\":83084,\\\\\\"dataSourceName\\\\\\":\\\\\\"zxcdasdas\\\\\\",\\\\\\"activeDirectoryIdentifier\\\\\\":null,\\\\\\"lastKnownIPAddress\\\\\\":null,\\\\\\"dataSourceType\\\\\\":0,\\\\\\"caseId\\\\\\":null,\\\\\\"locality\\\\\\":null,\\\\\\"moniker\\\\\\":null,\\\\\\"description\\\\\\":null,\\\\\\"createdDate\\\\\\":\\\\\\"2019-05-20T07:25:53.253\\\\\\",\\\\\\"createdbyId\\\\\\":1000,\\\\\\"createdByType\\\\\\":null,\\\\\\"firstname\\\\\\":null,\\\\\\"firstname_Id\\\\\\":\\\\\\"1\\\\\\",\\\\\\"lastname\\\\\\":null,\\\\\\"lastname_Id\\\\\\":\\\\\\"2\\\\\\",\\\\\\"middlename\\\\\\":null,\\\\\\"middlename_Id\\\\\\":\\\\\\"3\\\\\\",\\\\\\"emailaddress\\\\\\":null,\\\\\\"emailaddress_Id\\\\\\":\\\\\\"4\\\\\\",\\\\\\"domain\\\\\\":null,\\\\\\"domain_Id\\\\\\":\\\\\\"5\\\\\\",\\\\\\"fqdn\\\\\\":null,\\\\\\"fqdN_Id\\\\\\":\\\\\\"6\\\\\\",\\\\\\"agentversion\\\\\\":null,\\\\\\"agentversion_Id\\\\\\":\\\\\\"7\\\\\\",\\\\\\"detail\\\\\\":null,\\\\\\"detail_Id\\\\\\":\\\\\\"18\\\\\\",\\\\\\"password\\\\\\":null,\\\\\\"password_Id\\\\\\":\\\\\\"9\\\\\\",\\\\\\"networksharepath\\\\\\":null,\\\\\\"networksharepath_Id\\\\\\":\\\\\\"10\\\\\\",\\\\\\"username\\\\\\":null,\\\\\\"username_Id\\\\\\":\\\\\\"11\\\\\\",\\\\\\"grouptypeid\\\\\\":null,\\\\\\"grouptypeid_Id\\\\\\":\\\\\\"12\\\\\\",\\\\\\"shortname\\\\\\":null,\\\\\\"shortname_Id\\\\\\":\\\\\\"13\\\\\\",\\\\\\"pssatlasid\\\\\\":null,\\\\\\"pssatlasid_Id\\\\\\":\\\\\\"14\\\\\\",\\\\\\"notesusername\\\\\\":null,\\\\\\"notesusername_Id\\\\\\":\\\\\\"15\\\\\\",\\\\\\"configvalue\\\\\\":\\\\\\"{\\\\\\\\\\\\\\"ip\\\\\\\\\\\\\\":\\\\\\\\\\\\\\"asdsadasd\\\\\\\\\\\\\\",\\\\\\\\\\\\\\"ipend\\\\\\\\\\\\\\":\\\\\\\\\\\\\\"qweeeee\\\\\\\\\\\\\\"}\\\\\\",\\\\\\"configvalue_Id\\\\\\":\\\\\\"17\\\\\\",\\\\\\"deletedinad\\\\\\":null,\\\\\\"deletedinad_Id\\\\\\":\\\\\\"16\\\\\\"}]\\"}"'
+    parceJson = JSON.parse(JSON.parse(parceJson));
+    // parceJson = JSON.parse(parceJson.data.data);
+    console.log('JSON',JSON.parse(parceJson.data));
 
+    let  cd = connectorSearches.find( item => item.connector ==="box")
+    let  cd_filter = connectorSearches.filter( item => item.connector ==="box")
+    console.log('cd', cd);
+    console.log('cd_filter', cd_filter);
     console.log('connectorSearches', connectorSearches);
     console.log('this.filterConnectors', _this.filterConnectors);
 
@@ -333,7 +396,6 @@ function AppController() {
         // var connector = _this.filterConnectors.filter(item => item.ConnectorType === ConnectorType)[0];
         var connector = ConnectorType;
         console.log("connector", connector);
-
 
 
         for (let i = 0; i < 2; i++) {
@@ -459,40 +521,40 @@ function AppController() {
 
     var caseId = 1;
     var hasFilter = [];
-    // connectorSearches.forEach(connectorSearch => {
-    //     _this.filterConnectors.forEach(filterConnector => {
-    //         console.log('filterConnector.filterCrit[0]', filterConnector.filterCrit[0]);
-    //         if (connectorSearch.connector === filterConnector.JsonName && filterConnector.filterCrit[0].length > 0 ||
-    //             connectorSearch.connector === filterConnector.JsonName && filterConnector.filterCrit[1].length > 0
-    //         ) {
-    //             console.log('filterConnector', filterConnector);
-    //             hasFilter.push(connectorSearch);
-    //             var filterConnectorMody = _this.rewriteFilters(filterConnector);
-    //             console.log('filterConnector mody', filterConnector);
-    //             var args = {
-    //                 filter: {
-    //                     InclusionCriteria: filterConnectorMody[0],
-    //                     ExclusionCriteria: filterConnectorMody[1],
-    //                 },
-    //                 ConfigName: connectorSearch.search.ConfigName,
-    //                 ItemType: connectorSearch.search.ItemType,
-    //                 UserName: connectorSearch.search.UserName,
-    //             };
-    //
-    //             var url = filterConnector.urlJob.replace('{caseId}', caseId);
-    //             console.log(url, args);
-    //             // this.apiServer.post(url, args).then(function (result) {
-    //             //     _this.remoteForensicsService.getQuincAgentJobs();
-    //             //     _this.reviewService.userMessage("One Drive Collection Started");
-    //             // }, function (err) {
-    //             //     _this.remoteForensicsService.getQuincAgentJobs();
-    //             //     _this.reviewService.userMessage("One Drive Collection Failed");
-    //             // });
-    //         }
-    //     })
-    //
-    // });
-    // console.log('hasFilter', hasFilter);
+// connectorSearches.forEach(connectorSearch => {
+//     _this.filterConnectors.forEach(filterConnector => {
+//         console.log('filterConnector.filterCrit[0]', filterConnector.filterCrit[0]);
+//         if (connectorSearch.connector === filterConnector.JsonName && filterConnector.filterCrit[0].length > 0 ||
+//             connectorSearch.connector === filterConnector.JsonName && filterConnector.filterCrit[1].length > 0
+//         ) {
+//             console.log('filterConnector', filterConnector);
+//             hasFilter.push(connectorSearch);
+//             var filterConnectorMody = _this.rewriteFilters(filterConnector);
+//             console.log('filterConnector mody', filterConnector);
+//             var args = {
+//                 filter: {
+//                     InclusionCriteria: filterConnectorMody[0],
+//                     ExclusionCriteria: filterConnectorMody[1],
+//                 },
+//                 ConfigName: connectorSearch.search.ConfigName,
+//                 ItemType: connectorSearch.search.ItemType,
+//                 UserName: connectorSearch.search.UserName,
+//             };
+//
+//             var url = filterConnector.urlJob.replace('{caseId}', caseId);
+//             console.log(url, args);
+//             // this.apiServer.post(url, args).then(function (result) {
+//             //     _this.remoteForensicsService.getQuincAgentJobs();
+//             //     _this.reviewService.userMessage("One Drive Collection Started");
+//             // }, function (err) {
+//             //     _this.remoteForensicsService.getQuincAgentJobs();
+//             //     _this.reviewService.userMessage("One Drive Collection Failed");
+//             // });
+//         }
+//     })
+//
+// });
+// console.log('hasFilter', hasFilter);
     _this.conCheck = function () {
 
         if (_this.filterConnectors === []) {
